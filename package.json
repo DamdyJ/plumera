@@ -1,0 +1,19 @@
+{
+  "name": "resume-scout",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "npm run dev --prefix server",
+    "client:dev": "npm run dev --prefix client",
+    "server:build": "npm run build --prefix server",
+    "client:build": "npm run build --prefix client"
+  },
+  "keywords": [],
+  "author": "Damdy Junaedi",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
