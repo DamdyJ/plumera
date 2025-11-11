@@ -7,7 +7,8 @@ import { ClerkUserCreatedData, ClerkWebhookPayload } from "src/types/user.type";
 
 export const clerkWebhooks = async (req: Request, res: Response) => {
   try {
-    const CLERK_WEBHOOK_SIGNING_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
+    const CLERK_WEBHOOK_SIGNING_SECRET =
+      process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 
     if (!CLERK_WEBHOOK_SIGNING_SECRET) {
       throw new Error(
@@ -40,7 +41,8 @@ export const clerkWebhooks = async (req: Request, res: Response) => {
       }
       return res.status(400).send("Invalid webhook signature");
     }
-    const { data, type } = req.body as ClerkWebhookPayload<ClerkUserCreatedData>;
+    const { data, type } =
+      req.body as ClerkWebhookPayload<ClerkUserCreatedData>;
 
     switch (type) {
       case "user.created": {
@@ -51,8 +53,7 @@ export const clerkWebhooks = async (req: Request, res: Response) => {
             username: data.username ?? null,
             firstName: data.first_name ?? null,
             lastName: data.last_name ?? null,
-            emailAddress:
-              data.email_addresses?.[0]?.email_address ?? null,
+            emailAddress: data.email_addresses?.[0]?.email_address ?? null,
             imageUrl: data.image_url ?? data.profile_image_url ?? null,
             createdAt: new Date(data.created_at),
             updatedAt: new Date(data.updated_at),
@@ -73,8 +74,7 @@ export const clerkWebhooks = async (req: Request, res: Response) => {
               username: data.username ?? null,
               firstName: data.first_name ?? null,
               lastName: data.last_name ?? null,
-              emailAddress:
-                data.email_addresses?.[0]?.email_address ?? null,
+              emailAddress: data.email_addresses?.[0]?.email_address ?? null,
               imageUrl: data.image_url ?? data.profile_image_url ?? null,
               updatedAt: new Date(data.updated_at),
             })
@@ -99,7 +99,10 @@ export const clerkWebhooks = async (req: Request, res: Response) => {
       }
       case "user.deleted": {
         if (data.id != null) {
-          const deletedUser = await db.delete(user).where(eq(user.id, data.id)).returning()
+          const deletedUser = await db
+            .delete(user)
+            .where(eq(user.id, data.id))
+            .returning();
           res.status(200).json({
             success: true,
             data: deletedUser,
@@ -113,7 +116,7 @@ export const clerkWebhooks = async (req: Request, res: Response) => {
             status: 404,
           },
           traceId: res.locals.traceId,
-        })
+        });
       }
     }
     return res.status(200).json("OK");
