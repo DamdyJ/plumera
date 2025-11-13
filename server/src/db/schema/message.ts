@@ -10,6 +10,11 @@ export const message = pgTable("message", {
     .references(() => chat.id),
   role: roleEnum().notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }),
-  updatedAt: timestamp("updated_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
