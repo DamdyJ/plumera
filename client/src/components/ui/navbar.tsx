@@ -3,6 +3,12 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState, useRef } from "react";
 import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
+import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
@@ -265,6 +271,12 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
             >
               {ctaText}
             </Button>
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
           </div>
         </div>
       </header>
