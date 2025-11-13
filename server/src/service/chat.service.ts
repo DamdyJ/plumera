@@ -4,6 +4,10 @@ import { chat } from "src/db/schema";
 
 type chatType = InferInsertModel<typeof chat>;
 
+export const getAllChat = async () => {
+  return await db.select().from(chat);
+};
+
 export const createChat = async (chatData: chatType) => {
   return await db.insert(chat).values(chatData).returning();
 };
