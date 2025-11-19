@@ -1,10 +1,9 @@
-import * as React from "react";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import NotFoundComponent from "@/components/not-found";
 import { ThemeProvider } from "@/components/theme-provider";
-import Header from "@/components/header";
+import type { RouterContext } from "@/types/router-context";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   notFoundComponent: () => {
     return <NotFoundComponent />;
@@ -13,11 +12,8 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <React.Fragment>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Header/>
-        <Outlet />
-      </ThemeProvider>
-    </React.Fragment>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <Outlet />
+    </ThemeProvider>
   );
 }
