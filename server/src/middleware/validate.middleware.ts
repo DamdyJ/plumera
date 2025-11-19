@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodSchema } from "zod";
 
-export function validate(schema: ZodSchema<any>) {
+export function validate<T>(schema: ZodSchema<T>) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.body); // or req.params, req.query depending on use case
+      const result = schema.safeParse(req.body);
+      req.validated = result.data;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        // Map Zod errors to clear messages with exact paths
         const errorDetails = error.errors.map((issue) => ({
           path: issue.path.join("."),
           message: issue.message,
