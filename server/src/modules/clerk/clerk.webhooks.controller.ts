@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { user } from "src/db/schema";
 import db from "src/db/db";
 import { eq } from "drizzle-orm";
-import { ClerkUserCreatedData, ClerkWebhookPayload } from "src/types/user.type";
+import { ClerkUserCreatedData, ClerkWebhookPayload } from "src/types/user";
 
 export const clerkWebhooks = async (req: Request, res: Response) => {
   try {

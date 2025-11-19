@@ -19,13 +19,14 @@
     "@supabase/supabase-js": "^2.80.0",
     "cors": "^2.8.5",
     "drizzle-orm": "^0.44.7",
-    "drizzle-zod": "^0.8.3",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "langchain": "^1.0.3",
     "multer": "^2.0.2",
     "pdf-parse": "^1.1.1",
-    "postgres": "^3.4.7"
+    "postgres": "^3.4.7",
+    "winston": "^3.18.3",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

@@ -1,10 +1,30 @@
-import { cachedEmbeddings } from "../lib/gemini";
-import { pineconeIndex } from "../lib/pineconedb";
+import { eq, InferInsertModel } from "drizzle-orm";
+import db from "src/db/db";
+import { chat } from "src/db/schema";
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { PineconeStore } from "@langchain/pinecone";
-import { supabase } from "src/lib/supabase";
-import { HttpError } from "src/lib/httpError";
+import { supabase } from "src/lib/supabase.client";
+import { HttpError } from "src/utils/http-error.util";
+import { cachedEmbeddings } from "src/lib/gemini.client";
+import { pineconeIndex } from "src/lib/pinecone.client";
+
+type chatType = InferInsertModel<typeof chat>;
+
+export const getAllChat = async () => {
+  return await db.select().from(chat);
+};
+
+export const createChat = async (chatData: chatType) => {
+  return await db
+    .insert(chat)
+    .values(chatData)
+    .returning({ id: chat.id, url: chat.pdfUrl });
+};
+
+export const deleteChatById = async (id: string) => {
+  return await db.delete(chat).where(eq(chat.id, id));
+};
 
 export async function storeEmbeddingDocument(url: string) {
   const response = await fetch(url, {
