@@ -1,4 +1,5 @@
 import { ChatForm } from "@/components/chat/chat-form";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/chat/")({
@@ -7,8 +8,11 @@ export const Route = createFileRoute("/_authenticated/chat/")({
 
 function RouteComponent() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center outline outline-red-500">
-      <ChatForm />
-    </div>
+    <>
+      <SidebarTrigger className="bg-sidebar size-16 rounded-tr-xl rounded-br-xl border-r shadow-none" />
+      <div className="flex min-h-[calc(100svh-64px)] flex-col items-center justify-center">
+        <ChatForm />
+      </div>
+    </>
   );
 }

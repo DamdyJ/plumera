@@ -1,5 +1,5 @@
-import FileUpload from "@/components/file-upload";
 import Header from "@/components/header";
+import { Button } from "@/components/ui/button";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -23,9 +23,10 @@ function RouteComponent() {
               </p>
             </div>
 
-            <div className="w-full">
-              <Link to="/chat">Get Started</Link>
-              <FileUpload />
+            <div className="w-full flex justify-center">
+              <Button asChild className="">
+                <Link to="/chat">Get Started</Link>
+              </Button>
             </div>
           </div>
         </div>
