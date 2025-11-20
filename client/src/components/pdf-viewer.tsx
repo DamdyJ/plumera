@@ -17,7 +17,7 @@ export default function PdfViewer({ file }: { file: string }) {
     <Document
       file={file}
       onLoadSuccess={onDocumentLoadSuccess}
-      className="mx-auto w-full space-y-6"
+      className="mx-auto w-full"
     >
       {Array.from(new Array(numPages), (_el, index) => (
         <Page
@@ -25,7 +25,7 @@ export default function PdfViewer({ file }: { file: string }) {
           pageNumber={index + 1}
           renderTextLayer={false}
           renderAnnotationLayer={false}
-          className="border shadow-xs"
+          className="outline-border outline"
         />
       ))}
     </Document>

@@ -1,14 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Field,
   FieldError,
@@ -56,14 +49,7 @@ export function ChatForm() {
   };
 
   return (
-    <Card className="w-full sm:max-w-2xl">
-      <CardHeader>
-        <CardTitle>Resume Analyzer</CardTitle>
-        <CardDescription>
-          Check how well your resume aligns with a specific job title and job
-          description. Upload your resume and enter the role you’re targeting.
-        </CardDescription>
-      </CardHeader>
+    <Card className="w-full border-none shadow-none sm:max-w-2xl">
       <CardContent>
         <form id="resume-analyzer-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
@@ -105,7 +91,7 @@ export function ChatForm() {
                         id="form-resume-description"
                         placeholder="Include required skills, responsibilities, experience level, and other details from the job posting."
                         rows={6}
-                        className="min-h-24 resize-none"
+                        className="max-h-40 min-h-24 resize-none"
                         aria-invalid={fieldState.invalid}
                       />
                       <InputGroupAddon align="block-end">
