@@ -22,17 +22,18 @@ import { useCreateNewChat } from "@/hooks/useCreateNewChat";
 import { useAuth } from "@clerk/clerk-react";
 import { createChatForm } from "@/schema/create-chat-form";
 import type { createChatType } from "@/types/create-chat";
+import { Spinner } from "../ui/spinner";
 
 export function ChatForm() {
-  const { mutateAsync } = useCreateNewChat();
+  const { mutateAsync, isPending } = useCreateNewChat();
   const navigate = useNavigate();
   const { getToken } = useAuth();
 
   const form = useForm<createChatType>({
     resolver: zodResolver(createChatForm),
     defaultValues: {
-      title: "",
-      description: "",
+      jobTitle: "",
+      jobDescription: "",
       pdf: null,
     },
   });
@@ -40,49 +41,64 @@ export function ChatForm() {
   const onSubmit = async (data: createChatType) => {
     const token = await getToken();
     const chat = await mutateAsync({
-      title: data.title,
-      description: data.description,
-      pdf: data.pdf!,
+      title: data.jobTitle,
+      description: data.jobDescription,
+      pdf: data.pdf,
       token: token,
     });
-    return await navigate({ to: `/chat/${chat.data[0].id}` });
+
+    return await navigate({ to: `/chat/${chat.data.id}` });
   };
 
   return (
-    <Card className="w-full border-none shadow-none sm:max-w-2xl">
+    <Card className="w-full border-none shadow-none">
       <CardContent>
-        <form id="resume-analyzer-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
+        <form
+          id="resume-analyzer-form"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
+          <FieldGroup className="space-y-5">
             <Controller
-              name="title"
+              name="jobTitle"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-resume-title">Job Title</FieldLabel>
+                  <FieldLabel htmlFor="form-resume-title">
+                    Job Title *
+                  </FieldLabel>
                   <Input
                     {...field}
                     id="form-resume-title"
                     aria-invalid={fieldState.invalid}
-                    placeholder="e.g., Senior Frontend Engineer Resume"
+                    aria-describedby={
+                      fieldState.invalid ? "jobTitle-error" : undefined
+                    }
+                    placeholder="e.g., Senior Frontend Engineer"
                     autoComplete="off"
+                    maxLength={64}
                   />
                   {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                    <FieldError
+                      id="jobTitle-error"
+                      errors={[fieldState.error]}
+                    />
                   )}
                 </Field>
               )}
             />
 
             <Controller
-              name="description"
+              name="jobDescription"
               control={form.control}
               render={({ field, fieldState }) => {
-                const max = 1500;
+                const max = 5000;
                 const length = (field.value ?? "").length;
+                const percentage = Math.round((length / max) * 100);
                 return (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="form-resume-description">
-                      Job Description
+                      Job Description *
                     </FieldLabel>
 
                     <InputGroup>
@@ -90,19 +106,35 @@ export function ChatForm() {
                         {...field}
                         id="form-resume-description"
                         placeholder="Include required skills, responsibilities, experience level, and other details from the job posting."
-                        rows={6}
+                        rows={5}
+                        maxLength={max}
                         className="max-h-40 min-h-24 resize-none"
                         aria-invalid={fieldState.invalid}
+                        aria-describedby={
+                          fieldState.invalid
+                            ? "description-error"
+                            : "description-count"
+                        }
                       />
                       <InputGroupAddon align="block-end">
-                        <InputGroupText className="tabular-nums">
-                          {length}/{max} characters
+                        <InputGroupText
+                          id="description-count"
+                          className={`text-xs tabular-nums ${
+                            percentage > 90
+                              ? "text-amber-600"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {length}/{max}
                         </InputGroupText>
                       </InputGroupAddon>
                     </InputGroup>
 
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError
+                        id="description-error"
+                        errors={[fieldState.error]}
+                      />
                     )}
                   </Field>
                 );
@@ -115,7 +147,7 @@ export function ChatForm() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="form-resume-pdf">
-                    Your Resume (PDF)
+                    Your Resume (PDF) *
                   </FieldLabel>
 
                   <PdfUpload
@@ -136,7 +168,7 @@ export function ChatForm() {
                   />
 
                   {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                    <FieldError id="pdf-error" errors={[fieldState.error]} />
                   )}
                 </Field>
               )}
@@ -146,12 +178,30 @@ export function ChatForm() {
       </CardContent>
 
       <CardFooter>
-        <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
+        <Field orientation="horizontal" className="w-full gap-2 sm:gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => form.reset()}
+            disabled={isPending}
+            className="flex-1 sm:flex-initial"
+          >
             Reset
           </Button>
-          <Button type="submit" form="resume-analyzer-form">
-            Analyze
+          <Button
+            type="submit"
+            form="resume-analyzer-form"
+            disabled={isPending}
+            className="flex-1 sm:flex-initial"
+          >
+            {isPending ? (
+              <>
+                <Spinner className="mr-2" />
+                Creating...
+              </>
+            ) : (
+              "Create"
+            )}
           </Button>
         </Field>
       </CardFooter>

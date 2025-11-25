@@ -2,29 +2,21 @@ import React from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import ChatSidebar from "./chat-sidebar";
 
+type chat = {
+  id: string;
+  chatTitle: string;
+};
+
 export default function ChatSidebarLayout({
   children,
+  chats,
 }: {
   children: React.ReactNode;
+  chats: chat[];
 }) {
   return (
     <SidebarProvider>
-      <ChatSidebar
-        items={[
-          {
-            title: "Senior Frontend Developer",
-            url: "/chat/1",
-          },
-          {
-            title: "Fullstack developer",
-            url: "/chat/2",
-          },
-          {
-            title: "How to improve my resume",
-            url: "/chat/3",
-          },
-        ]}
-      />
+      <ChatSidebar chats={chats} />
 
       <main className="bg-sidebar max-h-svh w-full overflow-hidden p-4">
         {children}

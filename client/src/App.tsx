@@ -6,6 +6,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 
 const { router, queryClient } = getRouter();
 
+// Register things for typesafety
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
+
 function InnerApp() {
   const auth = useClerkAuth();
 
@@ -16,7 +23,6 @@ function InnerApp() {
       </div>
     );
   }
-
   return <RouterProvider router={router} context={{ auth }} />;
 }
 

@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -20,33 +18,33 @@ import {
 import { SendHorizontal } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreateNewMessage } from "@/hooks/useCreateNewMessage";
+import { Spinner } from "../ui/spinner";
 
 const formSchema = z.object({
-  prompt: z.string().max(1500, "Prompt must be at most 1500 characters."),
+  prompt: z.string().max(5000, "Prompt must be at most 5000 characters."),
 });
 
-export function MessageForm() {
+export function MessageForm({ chatId }: { chatId: string }) {
+  const { mutateAsync, isPending } = useCreateNewMessage();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
     },
   });
-  const onSubmit = async () => {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-xs overflow-x-auto rounded-md p-4">
-          a
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      await mutateAsync({ prompt: data.prompt, chatId });
+      toast.success("Message sent!");
+      form.reset();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
   };
 
   return (
@@ -85,8 +83,16 @@ export function MessageForm() {
                             type="submit"
                             form="chat-form"
                             className="ml-auto"
+                            disabled={isPending}
                           >
-                            <SendHorizontal />
+                            {isPending ? (
+                              <>
+                                <Spinner className="mr-2" />
+                                <SendHorizontal />
+                              </>
+                            ) : (
+                              <SendHorizontal />
+                            )}
                           </Button>
                         </Field>
                       </InputGroupAddon>

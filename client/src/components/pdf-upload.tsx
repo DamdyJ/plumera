@@ -7,7 +7,7 @@ import {
 interface PdfUploadProps {
   value?: File | null;
   onChange: (file: File | null) => void;
-  onError: () => void;
+  onError: (error?: Error | null) => void;
 }
 
 export default function PdfUpload({

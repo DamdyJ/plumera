@@ -1,24 +1,22 @@
 import z from "zod";
 
 export const createChatForm = z.object({
-  title: z
-    .string()
+  jobTitle: z
+    .string("Job title is required")
     .min(2, "Title must be at least 2 characters.")
     .max(64, "Title must be at most 64 characters."),
-  description: z
-    .string()
+  jobDescription: z
+    .string("Job description is required")
     .min(10, "Description must be at least 10 characters.")
-    .max(1500, "Description must be at most 1500 characters."),
+    .max(5000, "Description must be at most 5000 characters."),
   pdf: z
-    .any()
-    .refine((file) => file && file instanceof File, "File is required")
+    .instanceof(File, { message: "Resume PDF is required" })
     .refine(
-      (file) => !file || ["application/pdf"].includes(file.type),
-      "Invalid file type",
+      (file) => file.type === "application/pdf",
+      "Invalid file type. Please upload a PDF.",
     )
     .refine(
-      (file) => !file || file.size <= 10 * 1024 * 1024,
+      (file) => file.size <= 10 * 1024 * 1024,
       "File must be less than 10MB",
     ),
 });
-

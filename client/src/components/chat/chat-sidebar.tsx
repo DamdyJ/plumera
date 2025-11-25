@@ -22,9 +22,9 @@ import {
 import { LogOut, MessageCircle, MoreHorizontal, SquarePen } from "lucide-react";
 
 export default function ChatSidebar({
-  items,
+  chats,
 }: {
-  items: { title: string; url: string }[];
+  chats: { id: string; chatTitle: string }[];
 }) {
   return (
     <Sidebar className="border-none">
@@ -48,12 +48,12 @@ export default function ChatSidebar({
           <SidebarGroupLabel className="text-sm">Chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+              {chats.map((chat) => (
+                <SidebarMenuItem key={chat.id}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <a href={`/chat/${chat.id}`}>
                       <MessageCircle />
-                      <span>{item.title}</span>
+                      <span>{chat.chatTitle}</span>
                     </a>
                   </SidebarMenuButton>
                   <DropdownMenu>

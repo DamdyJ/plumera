@@ -4,6 +4,7 @@
   nocompatible: true;
   preferredstrategy: "pseudoelements";
 }
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -9,9 +9,5 @@ declare global {
     interface Response {
       locals: Locals;
     }
-
-    interface Request {
-      validated?: any;
-    }
   }
 }
