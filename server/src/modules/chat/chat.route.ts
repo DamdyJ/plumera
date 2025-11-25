@@ -1,14 +1,20 @@
 import { Router } from "express";
-import { create } from "src/modules/chat/chat.controller";
+import {
+  getChats,
+  getChat,
+  createChat,
+  deleteChat,
+} from "src/modules/chat/chat.controller";
 import multer from "multer";
-import { validate } from "src/middleware/validate.middleware";
-import { createChatDTO } from "src/modules/chat/chat.dto";
+import { requireAuth } from "@clerk/express";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
 
-// router.get("/", index);
-router.post("/", upload.single("pdf"), validate(createChatDTO), create);
+router.get("/", requireAuth(), getChats);
+router.get("/:id", requireAuth(), getChat);
+router.post("/", upload.single("pdf"), requireAuth(), createChat);
+router.delete("/:id", requireAuth(), deleteChat);
 
 export { router as ChatRouter };

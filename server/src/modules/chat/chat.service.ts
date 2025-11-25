@@ -1,89 +1,63 @@
-import { eq, InferInsertModel } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import db from "src/db/db";
 import { chat } from "src/db/schema";
-import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
-import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { PineconeStore } from "@langchain/pinecone";
-import { supabase } from "src/lib/supabase.client";
-import { HttpError } from "src/utils/http-error.util";
-import { cachedEmbeddings } from "src/lib/gemini.client";
-import { pineconeIndex } from "src/lib/pinecone.client";
+import { CreateChatDTO } from "./chat.dto";
+import { savePdf, storeEmbedding } from "../document/document.service";
+import { sanitizeFilename } from "src/utils/sanitize-filename.util";
 
-type chatType = InferInsertModel<typeof chat>;
-
-export const getAllChat = async () => {
-  return await db.select().from(chat);
-};
-
-export const createChat = async (chatData: chatType) => {
+export const findChatsByUserId = async (userId: string) => {
   return await db
-    .insert(chat)
-    .values(chatData)
-    .returning({ id: chat.id, url: chat.pdfUrl });
+    .select({ id: chat.id, chatTitle: chat.chatTitle })
+    .from(chat)
+    .where(eq(chat.userId, userId))
+    .orderBy(desc(chat.updatedAt));
 };
 
-export const deleteChatById = async (id: string) => {
+export const findChatById = async (id: string, userId?: string) => {
+  const conditions = userId
+    ? and(eq(chat.id, id), eq(chat.userId, userId))
+    : eq(chat.id, id);
+
+  const result = await db.select().from(chat).where(conditions);
+
+  if (result.length === 0) {
+    return null;
+  }
+
+  return result[0];
+};
+
+export const saveChat = async (
+  userId: string,
+  file: Express.Multer.File,
+  dto: CreateChatDTO,
+) => {
+  // Step 1: Upload PDF to storage
+  const pdf = await savePdf(file);
+  const chatTitle = sanitizeFilename(file.originalname);
+
+  // Step 2: Create embeddings (this is the most time-consuming operation)
+  // Note: If this fails, the PDF will remain in storage but won't be referenced
+  // Consider implementing cleanup logic in the future
+  const embeddingResult = await storeEmbedding(pdf.fullPath);
+  const documentId = embeddingResult.documentId;
+
+  // Step 3: Save to database
+  const data = await db
+    .insert(chat)
+    .values({
+      documentId,
+      userId,
+      chatTitle,
+      fileUrl: pdf.fullPath,
+      jobTitle: dto.jobTitle,
+      jobDescription: dto.jobDescription,
+    })
+    .returning({ id: chat.id, fileUrl: chat.fileUrl });
+
+  return data[0];
+};
+
+export const removeChatById = async (id: string) => {
   return await db.delete(chat).where(eq(chat.id, id));
 };
-
-export async function storeEmbeddingDocument(url: string) {
-  const response = await fetch(url, {
-    method: "GET",
-  });
-  if (!response.ok)
-    throw new HttpError(
-      response.status,
-      `Failed to fetch PDF: ${response.statusText}`,
-    );
-
-  const blob = await response.blob();
-  if (!blob || blob.size === 0)
-    throw new HttpError(400, "Downloaded file is empty");
-
-  const loader = new WebPDFLoader(blob);
-  if (!loader) throw new HttpError(400, "loader error");
-
-  const docs = await loader.load();
-
-  if (!docs) throw new HttpError(400, "DOCS error");
-  const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200,
-  });
-
-  if (!textSplitter) throw new HttpError(400, "textSplitter error");
-  const splitDocs = await textSplitter.splitDocuments(docs);
-
-  if (!splitDocs) throw new HttpError(400, "splitDocs error");
-  const result = await PineconeStore.fromDocuments(
-    splitDocs,
-    cachedEmbeddings,
-    {
-      pineconeIndex,
-      maxConcurrency: 5,
-    },
-  );
-  if (!result)
-    throw new HttpError(500, "Failed to store documents in pineconedb");
-  return result;
-}
-
-export async function savePdfToDatabase(file: Express.Multer.File) {
-  const bucket = process.env.BUCKET_NAME!;
-  const path = `uploads/${Date.now() + file.originalname}`;
-
-  const { data, error } = await supabase.storage
-    .from(bucket)
-    .upload(path, file.buffer, {
-      contentType: file.mimetype,
-      upsert: false,
-    });
-  if (error) {
-    throw new HttpError(
-      500,
-      `Supabase upload failed: ${error.message ?? error}`,
-    );
-  }
-  if (!data) throw new HttpError(500, "Supabase returned no data");
-  return data;
-}

@@ -4,6 +4,7 @@ export type ChatCreatePayload = {
   pdf: File;
   token: string | null;
 };
+
 export type ApiErrorResponse = {
   message?: string;
   details?: { path: string; message: string }[];

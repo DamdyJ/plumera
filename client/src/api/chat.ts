@@ -3,20 +3,14 @@ import { api } from "../lib/axios";
 import type { ChatCreatePayload, ApiErrorResponse } from "@/types/chat-api";
 
 export async function createChat(payload: ChatCreatePayload) {
-  const { token } = payload;
-  if (!token) {
-    throw new Error("Token is required");
-  }
   const form = new FormData();
-  form.append("title", payload.title);
-  form.append("description", payload.description);
+  form.append("jobTitle", payload.title);
+  form.append("jobDescription", payload.description);
   form.append("pdf", payload.pdf);
-
   try {
-    const response = await api.post("/api/chat", form, {
+    const response = await api.post("/api/chats", form, {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -30,4 +24,14 @@ export async function createChat(payload: ChatCreatePayload) {
     }
     throw error;
   }
+}
+
+export async function getChatById(id: string) {
+  const response = await api.get(`/api/chats/${id}`);
+  return response.data;
+}
+
+export async function getChatByUserId() {
+  const response = await api.get(`/api/chats`);
+  return response.data;
 }

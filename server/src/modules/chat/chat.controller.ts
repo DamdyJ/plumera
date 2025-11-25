@@ -2,159 +2,94 @@ import { Request, Response } from "express";
 import { getAuth } from "@clerk/express";
 import { asyncHandler } from "src/utils/async-handler.util";
 import { HttpError } from "src/utils/http-error.util";
-import { createChat, savePdfToDatabase } from "src/modules/chat/chat.service";
-import { createChatType } from "./chat.dto";
-// get all chat
-// export const index = asyncHandler(async (req: Request, res: Response) => {
-//   return res.status(200).json({});
-// });
+import {
+  findChatsByUserId,
+  findChatById,
+  saveChat,
+  removeChatById,
+} from "src/modules/chat/chat.service";
+import { createChatSchema } from "./chat.dto";
 
-// get chay by id
-// export const show = asyncHandler(async (req: Request, res: Response) => {
-//   return res.status(200).json({});
-// });
+// Get all chats for the authenticated user
+export const getChats = asyncHandler(async (req: Request, res: Response) => {
+  const userId = getAuth(req).userId;
+  if (!userId) throw new HttpError(401, "Unauthorized user");
 
-// create new chat
-export const create = asyncHandler(async (req: Request, res: Response) => {
-  const auth = getAuth(req);
-  if (!auth.userId) throw new HttpError(401, "Unauthorize user");
-
-  const { title, description } = req.validated as createChatType;
-
-  const file = req.file;
-  if (!file) throw new HttpError(400, "file is required!");
-
-  const pdfUrl = await savePdfToDatabase(file);
-
-  const data = await createChat({
-    userId: auth.userId,
-    title,
-    description,
-    pdfUrl: pdfUrl.fullPath,
-  });
+  const data = await findChatsByUserId(userId);
   return res.status(200).json({ success: true, data });
 });
 
-// export const create = asyncHandler(async (req: Request, res: Response) => {
-//   const auth = getAuth(req);
-//   if (!auth.userId) throw new HttpError(401, "Unauthorize user");
+// Get a single chat by ID
+export const getChat = asyncHandler(async (req: Request, res: Response) => {
+  const userId = getAuth(req).userId;
+  if (!userId) throw new HttpError(401, "Unauthorized user");
 
-//   // const jobDesc = req.body as string;
-//   // if (!jobDesc) throw new HttpError(400, "Job Desc is required!");
-//   const jobDesc = `Qualifications
+  const { id } = req.params;
+  if (!id) throw new HttpError(400, "Chat ID is required");
 
-// Requirements
+  const data = await findChatById(id, userId);
 
-// Strong knowledge in Javascript
+  if (!data) {
+    throw new HttpError(404, "Chat not found or you don't have access to it");
+  }
 
-// Strong knowledge in ReactJS concepts along with its popular accompanying libraries such as Redux, thunk, axios etc
+  return res.status(200).json({ success: true, data });
+});
 
-// Strong knowledge in HTML+CSS especially with general web interactivity
+// Create a new chat
+export const createChat = asyncHandler(async (req: Request, res: Response) => {
+  const userId = getAuth(req).userId;
+  if (!userId) throw new HttpError(401, "Unauthorized user");
 
-// Understand how to construct a clean & efficient codebase within a React project
+  // Validate request body
+  const validationResult = createChatSchema.safeParse(req.body);
+  if (!validationResult.success) {
+    // Throw ZodError so zodValidation middleware can handle it
+    throw validationResult.error;
+  }
 
-// Experience in using testing framework such as Jest, Mocha, @testing-library/react, enzyme is a big plus
+  // Validate file
+  const file = req.file;
+  if (!file) {
+    throw new HttpError(400, "PDF file is required");
+  }
 
-// Excellent in working within a team, with good communication skills
+  // Validate file type
+  if (!file.mimetype || !file.mimetype.includes("pdf")) {
+    throw new HttpError(400, "Only PDF files are allowed");
+  }
 
-// Knowledge in version control tools (git, mercurial) is a big plus
+  // Validate file size (10MB limit)
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  if (file.size > MAX_FILE_SIZE) {
+    throw new HttpError(413, "File size exceeds 10MB limit");
+  }
 
-// Knowledge in using Storybook is a big plus
+  if (file.size === 0) {
+    throw new HttpError(400, "File cannot be empty");
+  }
 
-// Knowledge in using NextJS is a big plus
+  const data = await saveChat(userId, file, validationResult.data);
+  return res.status(201).json({ success: true, data });
+});
 
-// `;
-//   const file = req.file;
-//   if (!file) throw new HttpError(400, "Invalid file");
-//   if (!file.mimetype?.includes("pdf"))
-//     throw new HttpError(400, "Only PDFs allowed");
-//   const MAX_BYTES = 10 * 1024 * 1024;
-//   if (file.size > MAX_BYTES) throw new HttpError(413, "File too large");
+// Delete a chat by ID
+export const deleteChat = asyncHandler(async (req: Request, res: Response) => {
+  const userId = getAuth(req).userId;
+  if (!userId) throw new HttpError(401, "Unauthorized user");
 
-//   const savedPdf = await savePdfToDatabase(file);
+  const { id } = req.params;
+  if (!id) throw new HttpError(400, "Chat ID is required");
 
-//   const fullPath = process.env.SUPABASE_STORAGE_URL + savedPdf.fullPath;
-//   const savedEmbedding = await storeEmbeddingDocument(fullPath);
+  // Verify chat exists and belongs to user
+  const chat = await findChatById(id, userId);
+  if (!chat) {
+    throw new HttpError(404, "Chat not found or you don't have access to it");
+  }
 
-//   const relevantDocs = await savedEmbedding.similaritySearch(jobDesc, 5);
-
-//   const resumeContext = relevantDocs.map((doc) => doc.pageContent).join("\n");
-
-//   const prompt = `
-//   You are a resume scoring expert. Evaluate the resume against the provided Job Description. Return ONLY a valid JSON object matching this TypeScript type:
-//   Return ONLY a valid JSON object matching this TypeScript type:
-//   {
-//     overall_score: number,   // weighted 0-100 integer
-//     category_scores: {
-//       relevance: { score: number, weight: 25, feedback: string },
-//       skills: { score: number, weight: 20, feedback: string },
-//       experience: { score: number, weight: 20, feedback: string },
-//       achievements: { score: number, weight: 15, feedback: string },
-//       formatting: { score: number, weight: 8, feedback: string },
-//       clarity: { score: number, weight: 7, feedback: string },
-//       ats: { score: number, weight: 5, feedback: string },
-//       education: { score: number, weight: 5, feedback: string }
-//     },
-//     action_items: string[] // up to 3 items, 1 sentence each, concise
-//   }
-//   Do NOT include markdown or code fences.
-
-//   STRICT RULES:
-//   1) All feedback and action_items MUST be in English.
-//   2) Each category score and overall_score must be an integer between 0 and 100.
-//   3) overall_score must be computed as the weighted average of category scores using the weights above, rounded to the nearest integer.
-//   4) feedback strings: max 25 words; include up to 1–3 keywords from the Job Description that are present (comma-separated) OR 'none found'.
-//   5) action_items: at most 3 items; each item MUST be a single sentence, imperative tone, max 15 words.
-//   6) No markdown, no code fences, no extra keys. If unable to comply produce {"error":"reason"}.
-//   `;
-//   const response = await gemini.invoke([
-//     {
-//       role: "system",
-//       content:
-//         "You are an expert resume reviewer with HR experience and knowledge of applicant tracking systems (ATS). Act like a senior recruiter who also understands how AI/ATS parse resumes. Be terse, objective, and evidence-based. Always return only JSON matching the requested schema. Never include any extra text, markdown, or explanation. If you cannot answer, return an object with a clear error field instead of prose.",
-//     },
-//     {
-//       role: "user",
-//       content: prompt + `\n\nJob: ${jobDesc}\n\nResume:\n${resumeContext}`,
-//     },
-//   ]);
-
-//   if (!response) throw new HttpError(500, "Failed to get gemini ai response");
-
-//   let responseText: string;
-
-//   if (typeof response.content === "string") {
-//     responseText = response.content;
-//   } else if (Array.isArray(response.content)) {
-//     responseText = response.content
-//       .map((part) =>
-//         typeof part === "object" && "text" in part ? part.text : "",
-//       )
-//       .join("\n");
-//   } else {
-//     throw new HttpError(500, "AI response content is in an unhandled format.");
-//   }
-
-//   // const jsonScore = (await JSON.parse(responseText)) as Scores;
-//   const jsonScore = jsonCleanup(responseText);
-//   console.log(jsonScore);
-//   const result = await createChat({
-//     pdfUrl: fullPath,
-//     userId: auth.userId,
-//     scores: jsonScore,
-//   });
-
-//   return res
-//     .status(200)
-//     .json({ success: true, data: result, traceId: res.locals.traceId });
-// });
-
-// update chat by id
-// export const update = asyncHandler(async (req: Request, res: Response) => {
-//   return res.status(200).json({});
-// });
-
-// delete chat by id
-// export const destroy = asyncHandler(async (req: Request, res: Response) => {
-//   return res.status(200).json({});
-// });
+  await removeChatById(id);
+  return res.status(200).json({
+    success: true,
+    message: "Chat deleted successfully",
+  });
+});

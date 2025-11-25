@@ -25,6 +25,6 @@ export function getRouter() {
     router,
     queryClient,
   });
-  
+
   return { router, queryClient };
 }
