@@ -4,6 +4,7 @@ import {
   getChat,
   createChat,
   deleteChat,
+  updateChatTitle,
 } from "src/modules/chat/chat.controller";
 import multer from "multer";
 import { requireAuth } from "@clerk/express";
@@ -15,6 +16,7 @@ const router = Router();
 router.get("/", requireAuth(), getChats);
 router.get("/:id", requireAuth(), getChat);
 router.post("/", upload.single("pdf"), requireAuth(), createChat);
+router.put("/:id", requireAuth(), updateChatTitle);
 router.delete("/:id", requireAuth(), deleteChat);
 
 export { router as ChatRouter };
