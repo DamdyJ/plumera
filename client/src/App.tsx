@@ -1,37 +1,16 @@
-import { RouterProvider } from "@tanstack/react-router";
-import { ClerkWrapper } from "./auth/clerk";
-import { useClerkAuth } from "./hooks/useClerkAuth";
-import { getRouter } from "./router";
-import { QueryClientProvider } from "@tanstack/react-query";
+// import Navbar from "./components/app/navbar.test";
+import Hero from "./pages/app/components/hero";
+import Navbar from "./pages/app/components/Navbar";
 
-const { router, queryClient } = getRouter();
-
-// Register things for typesafety
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
-
-function InnerApp() {
-  const auth = useClerkAuth();
-
-  if (auth.isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
-  return <RouterProvider router={router} context={{ auth }} />;
-}
+// import { Navbar } from "./components/ui/navbar";
 
 export default function App() {
   return (
-    <ClerkWrapper>
-      <QueryClientProvider client={queryClient}>
-        <InnerApp />
-      </QueryClientProvider>
-    </ClerkWrapper>
+    <>
+      <main className="relative">
+        <Navbar />
+        <Hero />
+      </main>
+    </>
   );
 }

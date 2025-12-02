@@ -1,30 +1,51 @@
-import { createRouter } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import { QueryClient } from "@tanstack/react-query";
-import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import type { RouterContext } from "./types/router-context";
+import { createBrowserRouter } from "react-router";
+import App from "./App";
+import NotFoundPage from "./pages/NotFoundPage";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
+import ChatPage from "./pages/chat/ChatPage";
+// import AuthLayout from "./components/archive/auth/auth-layout";
+// import ChatLayout from "./components/archive/chat/ChatLayout";
+import ErrorPage from "./pages/ErrorPage";
+import ChatSlugPage from "./pages/chat/ChatSlugPage";
+import ChatLayout from "./pages/chat/components/ChatLayout";
+import { Protect, RedirectToSignIn } from "@clerk/clerk-react";
 
-export function getRouter() {
-  const queryClient = new QueryClient();
-  const auth = {
-    isAuthenticated: undefined,
-    user: null,
-    login: () => {},
-    logout: () => {},
-    isLoading: false,
-  } as RouterContext["auth"];
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/sign-in",
+    element: <SignInPage />,
+  },
+  {
+    path: "/sign-up",
+    element: <SignUpPage />,
+  },
 
-  const router = createRouter({
-    routeTree,
-    context: { auth, queryClient } as RouterContext,
-    scrollRestoration: true,
-    defaultPreload: "intent",
-  });
-
-  setupRouterSsrQueryIntegration({
-    router,
-    queryClient,
-  });
-
-  return { router, queryClient };
-}
+  {
+    path: "/chat",
+    element: (
+      <Protect fallback={<RedirectToSignIn />}>
+        <ChatLayout />
+      </Protect>
+    ),
+    children: [
+      {
+        index: true,
+        element: <ChatPage />,
+      },
+      {
+        path: ":id",
+        element: <ChatSlugPage />,
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
+]);
