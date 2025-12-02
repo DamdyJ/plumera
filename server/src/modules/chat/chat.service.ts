@@ -32,17 +32,12 @@ export const saveChat = async (
   file: Express.Multer.File,
   dto: CreateChatDTO,
 ) => {
-  // Step 1: Upload PDF to storage
   const pdf = await savePdf(file);
   const chatTitle = sanitizeFilename(file.originalname);
 
-  // Step 2: Create embeddings (this is the most time-consuming operation)
-  // Note: If this fails, the PDF will remain in storage but won't be referenced
-  // Consider implementing cleanup logic in the future
   const embeddingResult = await storeEmbedding(pdf.fullPath);
   const documentId = embeddingResult.documentId;
 
-  // Step 3: Save to database
   const data = await db
     .insert(chat)
     .values({
@@ -60,4 +55,12 @@ export const saveChat = async (
 
 export const removeChatById = async (id: string) => {
   return await db.delete(chat).where(eq(chat.id, id));
+};
+
+export const updateChatTitleById = async (id: string, chatTitle: string) => {
+  return await db
+    .update(chat)
+    .set({ chatTitle })
+    .where(eq(chat.id, id))
+    .returning({ id: chat.id, chatTitle: chat.chatTitle });
 };

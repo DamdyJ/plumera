@@ -12,3 +12,10 @@ export const createChatSchema = z.object({
 });
 
 export type CreateChatDTO = z.infer<typeof createChatSchema>;
+
+export const updateChatSchema = z.object({
+  chatTitle: z
+    .string({ required_error: "Chat title is required" })
+    .max(64, "Chat title must be under 64 characters")
+    .nonempty(),
+});

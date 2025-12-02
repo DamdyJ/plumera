@@ -9,7 +9,7 @@ import { createMessageSchema } from "./message.dto";
 export const getMessages = asyncHandler(async (req: Request, res: Response) => {
   const { id: chatId } = req.params;
   const data = await fetchMessageByChatId(chatId);
-  return res.status(200).json({ success: true, data });
+  return res.status(200).json(data);
 });
 
 // create new message

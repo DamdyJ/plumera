@@ -7,8 +7,9 @@ import {
   findChatById,
   saveChat,
   removeChatById,
+  updateChatTitleById,
 } from "src/modules/chat/chat.service";
-import { createChatSchema } from "./chat.dto";
+import { createChatSchema, updateChatSchema } from "./chat.dto";
 
 // Get all chats for the authenticated user
 export const getChats = asyncHandler(async (req: Request, res: Response) => {
@@ -16,7 +17,7 @@ export const getChats = asyncHandler(async (req: Request, res: Response) => {
   if (!userId) throw new HttpError(401, "Unauthorized user");
 
   const data = await findChatsByUserId(userId);
-  return res.status(200).json({ success: true, data });
+  return res.status(200).json(data);
 });
 
 // Get a single chat by ID
@@ -33,7 +34,7 @@ export const getChat = asyncHandler(async (req: Request, res: Response) => {
     throw new HttpError(404, "Chat not found or you don't have access to it");
   }
 
-  return res.status(200).json({ success: true, data });
+  return res.status(200).json(data);
 });
 
 // Create a new chat
@@ -70,8 +71,31 @@ export const createChat = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const data = await saveChat(userId, file, validationResult.data);
-  return res.status(201).json({ success: true, data });
+  return res.status(201).json(data);
 });
+
+// Update chat title
+export const updateChatTitle = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = getAuth(req).userId;
+    if (!userId) throw new HttpError(401, "Unauthorized user");
+
+    const { id } = req.params;
+    const { chatTitle } = updateChatSchema.parse(req.body);
+
+    if (!id) throw new HttpError(400, "Chat ID is required");
+    if (!chatTitle) throw new HttpError(400, "Chat title is required");
+
+    // Verify the chat exists and belongs to the user
+    const chat = await findChatById(id, userId);
+    if (!chat) {
+      throw new HttpError(404, "Chat not found or you don't have access to it");
+    }
+
+    const updatedChat = await updateChatTitleById(id, chatTitle);
+    return res.status(200).json(updatedChat);
+  },
+);
 
 // Delete a chat by ID
 export const deleteChat = asyncHandler(async (req: Request, res: Response) => {
@@ -92,4 +116,22 @@ export const deleteChat = asyncHandler(async (req: Request, res: Response) => {
     success: true,
     message: "Chat deleted successfully",
   });
+});
+
+// Score user resume/cv base on job title and description
+export const scoreChat = asyncHandler(async (req: Request, res: Response) => {
+  const userId = getAuth(req).userId;
+  if (!userId) throw new HttpError(401, "Unauthorized user");
+
+  const { id } = req.params;
+  if (!id) throw new HttpError(400, "Chat ID is required");
+
+  // Verify chat exists and belongs to user
+  const chat = await findChatById(id, userId);
+  if (!chat) {
+    throw new HttpError(404, "Chat not found or you don't have access to it");
+  }
+
+  const updatedChat = await updateChatTitleById(id, chat.chatTitle);
+  return res.status(200).json({ success: true, data: updatedChat });
 });

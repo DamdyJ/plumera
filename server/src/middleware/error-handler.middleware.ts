@@ -23,7 +23,10 @@ export function errorHandler(
   });
 
   const statusCode = err.statusCode ?? 500;
-
+  console.log("statuscode: ", statusCode);
+  console.log("error : ", err);
+  console.log("error message : ", err.message);
+  console.log("traceId  : ", res.locals.traceId);
   res.status(statusCode).json({
     success: false,
     statusCode,

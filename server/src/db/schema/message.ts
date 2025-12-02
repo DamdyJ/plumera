@@ -6,7 +6,7 @@ export const message = pgTable("message", {
   id: uuid("id").primaryKey().defaultRandom(),
   chatId: uuid("chat_id")
     .notNull()
-    .references(() => chat.id),
+    .references(() => chat.id, { onDelete: "cascade" }),
   prompt: text("prompt").notNull(),
   response: text("response").notNull().default(""),
   createdAt: timestamp("created_at", { withTimezone: true })
