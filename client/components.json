@@ -19,6 +19,7 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@acme": "https://acme.com/r/{name}.json"
+    "@acme": "https://acme.com/r/{name}.json",
+    "@tailark": "https://tailark.com/r/{name}.json"
   }
 }
