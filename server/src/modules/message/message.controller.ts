@@ -1,8 +1,8 @@
-import { asyncHandler } from "src/utils/async-handler.util";
+import { asyncHandler } from "../../utils/async-handler.util";
 import { Request, Response } from "express";
 import { fetchMessageByChatId, saveMessage } from "./message.service";
 import { getAuth } from "@clerk/express";
-import { HttpError } from "src/utils/http-error.util";
+import { HttpError } from "../../utils/http-error.util";
 import { createMessageSchema } from "./message.dto";
 
 // get all messages

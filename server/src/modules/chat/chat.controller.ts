@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { getAuth } from "@clerk/express";
-import { asyncHandler } from "src/utils/async-handler.util";
-import { HttpError } from "src/utils/http-error.util";
+import { asyncHandler } from "../../utils/async-handler.util";
+import { HttpError } from "../../utils/http-error.util";
 import {
   findChatsByUserId,
   findChatById,
   saveChat,
   removeChatById,
   updateChatTitleById,
-} from "src/modules/chat/chat.service";
+} from "./chat.service";
 import { createChatSchema, updateChatSchema } from "./chat.dto";
 
 // Get all chats for the authenticated user

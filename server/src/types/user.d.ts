@@ -1,4 +1,4 @@
-import { user } from "src/db/schema";
+import { user } from "../db/schema";
 
 export type NewUser = typeof user.$inferInsert;
 export type UserRow = typeof user.$inferSelect;

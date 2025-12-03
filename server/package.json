@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
+    "build": "tsc",
+    "start": "node --env-file .env --require tsconfig-paths/register dist/index.js",
     "dev": "tsx --env-file .env --watch src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -27,6 +29,7 @@
     "multer": "^2.0.2",
     "pdf-parse": "^1.1.1",
     "postgres": "^3.4.7",
+    "tsconfig-paths": "^4.2.0",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0"
   },

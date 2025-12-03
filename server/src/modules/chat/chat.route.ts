@@ -5,7 +5,7 @@ import {
   createChat,
   deleteChat,
   updateChatTitle,
-} from "src/modules/chat/chat.controller";
+} from "./chat.controller";
 import multer from "multer";
 import { requireAuth } from "@clerk/express";
 
