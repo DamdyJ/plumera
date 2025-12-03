@@ -1,0 +1,11 @@
+node_modules
+src
+*.ts
+.env
+.env.local
+.git
+.gitignore
+README.md
+drizzle.config.ts
+tsconfig.json
+package-lock.json
