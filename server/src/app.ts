@@ -4,7 +4,7 @@ import { traceMiddleware } from "./middleware/trace-id.middleware";
 import { clerkMiddleware } from "@clerk/express";
 import { errorHandler } from "./middleware/error-handler.middleware";
 import cors from "cors";
-import { requestLogger } from "./middleware/request-logger.middleware";
+// import { requestLogger } from "./middleware/request-logger.middleware";
 import { corsOptions } from "./lib/cors.config";
 import { ChatRouter } from "./modules/chat/chat.route";
 
@@ -23,7 +23,9 @@ app.use(helmet());
 
 app.use("/api/chats", ChatRouter);
 app.use("/api/chats/:id/messages", MessageRouter);
-
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
 app.use(zodValidation);
 app.use(errorHandler);
 
