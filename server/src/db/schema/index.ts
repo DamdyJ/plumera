@@ -1,2 +1,2 @@
-export { chat } from "./chat";
-export { message } from "./message";
+export { chat } from "./chat.js";
+export { message } from "./message.js";

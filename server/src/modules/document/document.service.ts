@@ -1,12 +1,12 @@
-import { supabase } from "src/lib/supabase.client";
+import { supabase } from "../../lib/supabase.client.js";
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { PineconeStore } from "@langchain/pinecone";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { HttpError } from "src/utils/http-error.util";
-import { cachedEmbeddings, gemini } from "src/lib/gemini.client";
-import { pineconeIndex } from "src/lib/pinecone.client";
-import { sanitizeFilename } from "src/utils/sanitize-filename.util";
+import { HttpError } from "../../utils/http-error.util.js";
+import { cachedEmbeddings, gemini } from "../../lib/gemini.client.js";
+import { pineconeIndex } from "../../lib/pinecone.client.js";
+import { sanitizeFilename } from "../../utils/sanitize-filename.util.js";
 import { v4 as uuidv4 } from "uuid";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 

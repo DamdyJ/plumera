@@ -4,8 +4,6 @@ import NotFoundPage from "./pages/NotFoundPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ChatPage from "./pages/chat/ChatPage";
-// import AuthLayout from "./components/archive/auth/auth-layout";
-// import ChatLayout from "./components/archive/chat/ChatLayout";
 import ErrorPage from "./pages/ErrorPage";
 import ChatSlugPage from "./pages/chat/ChatSlugPage";
 import ChatLayout from "./pages/chat/components/ChatLayout";

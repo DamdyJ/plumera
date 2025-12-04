@@ -1,5 +1,3 @@
-// import { ChatForm } from "@/components/archive/chat/chat-form";
-
 import ChatForm from "./components/ChatForm";
 
 export default function Chat() {

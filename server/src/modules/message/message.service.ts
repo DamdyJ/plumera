@@ -1,8 +1,8 @@
-import db from "src/db/db";
-import { chat, message } from "src/db/schema";
-import { queryDocument } from "../document/document.service";
+import db from "../../db/db.js";
+import { chat, message } from "../../db/schema/index.js";
+import { queryDocument } from "../document/document.service.js";
 import { eq } from "drizzle-orm";
-import { HttpError } from "src/utils/http-error.util";
+import { HttpError } from "../../utils/http-error.util.js";
 
 export const fetchMessageByChatId = async (chatId: string) => {
   return await db
