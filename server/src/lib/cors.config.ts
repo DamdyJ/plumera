@@ -5,6 +5,6 @@ export const corsOptions: CorsOptions = {
     process.env.NODE_ENV === "development"
       ? "http://localhost:5173"
       : process.env.CLIENT_URL,
-  credentials: true,
+  credentials: false,
   allowedHeaders: ["Content-Type", "Authorization"],
 };
