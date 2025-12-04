@@ -1,9 +1,9 @@
 import { eq, desc, and } from "drizzle-orm";
-import db from "src/db/db";
-import { chat } from "src/db/schema";
-import { CreateChatDTO } from "./chat.dto";
-import { savePdf, storeEmbedding } from "../document/document.service";
-import { sanitizeFilename } from "src/utils/sanitize-filename.util";
+import db from "../../db/db.js";
+import { chat } from "../../db/schema/index.js";
+import { CreateChatDTO } from "./chat.dto.js";
+import { savePdf, storeEmbedding } from "../document/document.service.js";
+import { sanitizeFilename } from "../../utils/sanitize-filename.util.js";
 
 export const findChatsByUserId = async (userId: string) => {
   return await db

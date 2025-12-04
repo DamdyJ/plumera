@@ -7,7 +7,7 @@ import {
   jsonb,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { message } from "./message";
+import { message } from "./message.js";
 
 export const chat = pgTable(
   "chat",
