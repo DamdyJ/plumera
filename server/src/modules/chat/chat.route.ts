@@ -7,16 +7,15 @@ import {
   updateChatTitle,
 } from "./chat.controller.js";
 import multer from "multer";
-import { requireAuth } from "@clerk/express";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
 
-router.get("/", requireAuth(), getChats);
-router.get("/:id", requireAuth(), getChat);
-router.post("/", upload.single("pdf"), requireAuth(), createChat);
-router.put("/:id", requireAuth(), updateChatTitle);
-router.delete("/:id", requireAuth(), deleteChat);
+router.get("/", getChats);
+router.get("/:id", getChat);
+router.post("/", upload.single("pdf"), createChat);
+router.put("/:id", updateChatTitle);
+router.delete("/:id", deleteChat);
 
 export { router as ChatRouter };
