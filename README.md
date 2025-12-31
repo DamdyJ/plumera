@@ -58,8 +58,7 @@ Frontend is built with Vite + React + TypeScript (shadcn/ui). Backend is Express
   package.json
 /server      # backend (Express + TS)
   package.json
-hero.jpg
-dashboard.jpg
+/docs
 README.md
 ```
 
