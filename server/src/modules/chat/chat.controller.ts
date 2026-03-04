@@ -15,9 +15,13 @@ import { createChatSchema, updateChatSchema } from "./chat.dto.js";
 export const getChats = asyncHandler(async (req: Request, res: Response) => {
   const userId = getAuth(req).userId;
   if (!userId) throw new HttpError(401, "Unauthorized user");
-
-  const data = await findChatsByUserId(userId);
-  return res.status(200).json(data);
+  try {
+    const data = await findChatsByUserId(userId);
+    return res.status(200).json(data);
+  } catch (err) {
+    console.error("Error in getChats:", err);
+    throw new HttpError(500, "Internal Server Error", { cause: err });
+  }
 });
 
 // Get a single chat by ID

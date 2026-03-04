@@ -29,3 +29,7 @@ app.use(zodValidation);
 app.use(errorHandler);
 
 export default app;
+// Health endpoint for quick checks
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
