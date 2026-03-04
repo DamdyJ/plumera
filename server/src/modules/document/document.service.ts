@@ -342,6 +342,8 @@ const validateResumeContent = (
   docs: Array<any>,
 ): "unrelated" | "valid" | "partial" => {
   const combined = docs
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map((d) => d.pageContent)
     .join(" ")
     .toLowerCase();
