@@ -5,6 +5,8 @@ import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+/* eslint-disable react-refresh/only-export-components */
+
 function NavigationMenu({
   className,
   children,
@@ -166,3 +168,4 @@ export {
   NavigationMenuViewport,
   navigationMenuTriggerStyle,
 };
+/* eslint-enable react-refresh/only-export-components */

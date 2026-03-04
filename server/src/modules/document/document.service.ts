@@ -339,7 +339,7 @@ const shouldUseContext = (question: string): boolean => {
 
 // Helper: Validate resume
 const validateResumeContent = (
-  docs: Array<any>,
+  docs: Array<{ pageContent: string; [key: string]: any }>,
 ): "unrelated" | "valid" | "partial" => {
   const combined = docs
     .map((d) => d.pageContent)
