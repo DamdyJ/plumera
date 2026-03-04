@@ -19,6 +19,11 @@
 
 name: Plumera Agent System
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -91,13 +96,17 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const prNumber = context.payload.pull_request?.number;
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: "## Code Review (AI Agent)\n\n**Reviewer:** Code Reviewer Agent\n**Model:** gemini-3-flash (Google/Gemini API)\n\n### Analysis Scope\n- Code quality & conventions\n- Security vulnerabilities\n- Best practices\n- Bug detection\n\n### Note\nFor detailed analysis, run agents manually or check AGENTS.md.\n\n---\n*Plumera Agent System*"
-            });
+            try {
+              const prNumber = context.payload.pull_request?.number;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: "## Code Review (AI Agent)\\n\\n**Reviewer:** Code Reviewer Agent\\n**Model:** gemini-3-flash (Google/Gemini API)\\n\\n### Analysis Scope\\n- Code quality & conventions\\n- Security vulnerabilities\\n- Best practices\\n- Bug detection\\n\\n### Note\\nFor detailed analysis, run agents manually or check AGENTS.md.\\n\\n---\\n*Plumera Agent System*"
+              });
+            } catch (err) {
+              console.log("GitHub comment post skipped or failed:", err.message);
+            }
 
   frontend-specialist:
     needs: ci-guardian
