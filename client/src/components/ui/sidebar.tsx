@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
+
+/* eslint-disable react-refresh/only-export-components */
+
 import {
   Sheet,
   SheetContent,
@@ -722,3 +725,5 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+/* eslint-enable react-refresh/only-export-components */
+
