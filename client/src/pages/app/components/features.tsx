@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { MessageSquare, FileText, Target } from "lucide-react";
 import type { ReactNode } from "react";
 

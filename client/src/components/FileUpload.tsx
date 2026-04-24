@@ -2,7 +2,7 @@ import {
   Dropzone,
   DropzoneContent,
   DropzoneEmptyState,
-} from "@/components/ui/dropzone";
+} from "@/components/ui/Dropzone";
 import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";

@@ -1,4 +1,4 @@
-import { MessageForm } from "@/pages/message/components/message-form";
+import { MessageForm } from "@/pages/message/components/MessageForm";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Markdown from "react-markdown";
@@ -9,7 +9,7 @@ import type { GetChatResponseType } from "./types/chat";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import type { CreateMessageResponseType } from "./types/message";
-import { RenderPDF } from "./components/ui/render-pdf";
+import { RenderPDF } from "./components/ui/RenderPdf";
 
 export default function ChatSlugPage() {
   const { id: chatId } = useParams();

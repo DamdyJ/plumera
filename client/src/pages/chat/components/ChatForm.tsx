@@ -1,14 +1,14 @@
-import PdfUpload from "@/components/pdf-upload";
-import { Button } from "@/components/ui/button";
+import PdfUpload from "@/components/PdfUpload";
+import { Button } from "@/components/ui/Button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group";
-import { Spinner } from "@/components/ui/spinner";
+} from "@/components/ui/Field";
+import { Input } from "@/components/ui/Input";
+import { InputGroup, InputGroupTextarea } from "@/components/ui/InputGroup";
+import { Spinner } from "@/components/ui/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { useCreateChat } from "../hooks/useCreateChat";

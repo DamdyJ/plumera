@@ -2,7 +2,7 @@ import {
   Dropzone,
   DropzoneContent,
   DropzoneEmptyState,
-} from "@/components/ui/dropzone";
+} from "@/components/ui/Dropzone";
 
 interface PdfUploadProps {
   value?: File | null;

@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -14,11 +14,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/Sidebar";
 import { useChats } from "@/pages/chat/hooks/useChats";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
-import { Skeleton } from "../../../../components/ui/skeleton";
+import { Skeleton } from "../../../../components/ui/Skeleton";
 import { useDeleteChat } from "@/pages/chat/hooks/useDeleteChat";
 import { Link, useNavigate } from "react-router";
 import { useRenameChat } from "@/pages/chat/hooks/useRenameChat";

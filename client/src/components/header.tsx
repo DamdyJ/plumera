@@ -1,5 +1,5 @@
 import { Command, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router";

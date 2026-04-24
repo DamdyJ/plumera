@@ -1,15 +1,15 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+} from "@/components/ui/NavigationMenu";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/ui/Popover";
 import {
   SignedIn,
   SignedOut,

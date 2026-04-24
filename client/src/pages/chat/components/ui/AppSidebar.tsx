@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Command, LogOut, SquarePen } from "lucide-react";
 
-import { NavChats } from "@/pages/chat/components/ui/nav-chats";
-import { TeamSwitcher } from "@/pages/chat/components/ui/team-switcher";
+import { NavChats } from "@/pages/chat/components/ui/NavChats";
+import { TeamSwitcher } from "@/pages/chat/components/ui/TeamSwitcher";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/Sidebar";
 import { Link } from "react-router";
 import { SignOutButton } from "@clerk/clerk-react";
 

@@ -8,7 +8,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 import { useState } from "react";
 import { Document, Page } from "react-pdf";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export function RenderPDF({ file }: { file: string }) {
   const [numPages, setNumPages] = useState<number | null>(null);

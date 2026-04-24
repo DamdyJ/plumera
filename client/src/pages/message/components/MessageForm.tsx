@@ -1,24 +1,24 @@
 import * as z from "zod";
 
-import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/Button";
+import { CardContent } from "@/components/ui/Card";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@/components/ui/Field";
 
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupTextarea,
-} from "@/components/ui/input-group";
+} from "@/components/ui/InputGroup";
 import { SendHorizontal } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateMessage } from "@/pages/message/hooks/useCreateMessage";
-import { Spinner } from "../../../components/ui/spinner";
+import { Spinner } from "../../../components/ui/Spinner";
 
 const formSchema = z.object({
   prompt: z.string().max(5000, "Prompt must be at most 5000 characters."),

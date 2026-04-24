@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
-import { TextEffect } from "@/components/ui/text-effect";
-import { AnimatedGroup } from "@/components/ui/animated-group";
-import { HeroHeader } from "../../../components/header";
+import { TextEffect } from "@/components/ui/TextEffect";
+import { AnimatedGroup } from "@/components/ui/AnimatedGroup";
+import { HeroHeader } from "../../../components/Header";
 import { Link } from "react-router";
 
 const transitionVariants = {

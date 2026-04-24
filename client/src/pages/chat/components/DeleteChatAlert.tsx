@@ -8,8 +8,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/AlertDialog";
+import { Button } from "@/components/ui/Button";
 import { Trash2 } from "lucide-react";
 
 export default function DeleteChatAlert({
