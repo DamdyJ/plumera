@@ -13,8 +13,8 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/Sidebar";
+import { useSidebar } from "@/components/ui/sidebar-context";
 import { useChats } from "@/pages/chat/hooks/useChats";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";

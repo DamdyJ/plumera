@@ -16,15 +16,11 @@ export default function FileUpload() {
       const token = await getToken();
       const formData = new FormData();
       formData.append("file", files[0]);
-      const res = await axios.post(
-        "http://localhost:3000/api/chat",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const res = await axios.post("http://localhost:3000/api/chat", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       console.log(res.data);
       setFiles(files);
     } catch (error) {

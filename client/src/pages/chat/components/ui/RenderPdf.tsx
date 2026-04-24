@@ -18,7 +18,7 @@ export function RenderPDF({ file }: { file: string }) {
   }
 
   return (
-    <div className="p-4 bg-muted">
+    <div className="bg-muted p-4">
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}

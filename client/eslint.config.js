@@ -30,7 +30,7 @@ export default defineConfig([
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" },
       ],
       "no-console": "warn",
       "prefer-const": "error",

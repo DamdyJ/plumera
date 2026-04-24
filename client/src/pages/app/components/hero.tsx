@@ -5,11 +5,11 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden p-4">
       <div className="relative grid min-h-[calc(100svh-6rem)] items-center p-4">
-        <div className="mx-auto max-w-3xl space-y-6 text-center z-10">
+        <div className="z-10 mx-auto max-w-3xl space-y-6 text-center">
           <h1 className="text-5xl font-bold">
             Your AI career advisor, always ready to help.
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-muted-foreground text-lg">
             Plumera analyzes your resume against job descriptions and tells you
             exactly what needs to change. Get a Job Match Score, find your
             weaknesses, and talk to an AI that understands your career.
@@ -20,8 +20,8 @@ export default function Hero() {
         </div>
 
         {/* decorative blobs */}
-        <div className="absolute top-20 left-20 h-40 w-40 rounded-full bg-green-200/60 blur-2xl transform-gpu" />
-        <div className="absolute top-80 right-20 h-40 w-40 rounded-full bg-green-200/60 blur-2xl transform-gpu" />
+        <div className="absolute top-20 left-20 h-40 w-40 transform-gpu rounded-full bg-green-200/60 blur-2xl" />
+        <div className="absolute top-80 right-20 h-40 w-40 transform-gpu rounded-full bg-green-200/60 blur-2xl" />
       </div>
 
       {/* image area */}
@@ -32,7 +32,7 @@ export default function Hero() {
         <img
           src="/hero_img.jpg"
           alt="hero-image"
-          className="relative z-10 mx-auto max-w-[90rem] rounded-2xl object-cover w-full"
+          className="relative z-10 mx-auto w-full max-w-[90rem] rounded-2xl object-cover"
           // inline style for mask — tune the stops to change height/softness
           style={{
             // WebKit prefix for Safari

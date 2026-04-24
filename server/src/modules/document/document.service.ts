@@ -1,4 +1,5 @@
 import { supabase } from "../../lib/supabase.client";
+import { Document } from "@langchain/core/documents";
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { PineconeStore } from "@langchain/pinecone";
@@ -339,7 +340,7 @@ const shouldUseContext = (question: string): boolean => {
 
 // Helper: Validate resume
 const validateResumeContent = (
-  docs: Array<any>,
+  docs: Document[],
 ): "unrelated" | "valid" | "partial" => {
   const combined = docs
     .map((d) => d.pageContent)
