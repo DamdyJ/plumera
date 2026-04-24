@@ -1,4 +1,4 @@
-import app from "./app.js";
+import app from "./app";
 
 const PORT = process.env.NODE_ENV === "development" ? 3000 : process.env.PORT;
 app.listen(PORT, () => {

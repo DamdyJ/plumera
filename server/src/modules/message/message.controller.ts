@@ -1,9 +1,9 @@
-import { asyncHandler } from "../../utils/async-handler.util.js";
+import { asyncHandler } from "../../utils/async-handler.util";
 import { Request, Response } from "express";
-import { fetchMessageByChatId, saveMessage } from "./message.service.js";
+import { fetchMessageByChatId, saveMessage } from "./message.service";
 import { getAuth } from "@clerk/express";
-import { HttpError } from "../../utils/http-error.util.js";
-import { createMessageSchema } from "./message.dto.js";
+import { HttpError } from "../../utils/http-error.util";
+import { createMessageSchema } from "./message.dto";
 
 // get all messages
 export const getMessages = asyncHandler(async (req: Request, res: Response) => {

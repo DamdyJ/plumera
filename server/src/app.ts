@@ -2,13 +2,13 @@ import "dotenv/config";
 import express, { json, urlencoded } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import { traceMiddleware } from "./middleware/trace-id.middleware.js";
+import { traceMiddleware } from "./middleware/trace-id.middleware";
 import { clerkMiddleware } from "@clerk/express";
-import { errorHandler } from "./middleware/error-handler.middleware.js";
-import { corsOptions } from "./lib/cors.config.js";
-import { ChatRouter } from "./modules/chat/chat.route.js";
-import { zodValidation } from "./middleware/zod-validation.middleware.js";
-import { MessageRouter } from "./modules/message/message.route.js";
+import { errorHandler } from "./middleware/error-handler.middleware";
+import { corsOptions } from "./lib/cors.config";
+import { ChatRouter } from "./modules/chat/chat.route";
+import { zodValidation } from "./middleware/zod-validation.middleware";
+import { MessageRouter } from "./modules/message/message.route";
 
 const app = express();
 

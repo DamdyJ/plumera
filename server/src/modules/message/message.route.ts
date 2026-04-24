@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { requireAuth } from "@clerk/express";
-import { createMessage, getMessages } from "./message.controller.js";
+import { createMessage, getMessages } from "./message.controller";
 
 const router = Router({ mergeParams: true });
 

@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { getAuth } from "@clerk/express";
-import { asyncHandler } from "../../utils/async-handler.util.js";
-import { HttpError } from "../../utils/http-error.util.js";
+import { asyncHandler } from "../../utils/async-handler.util";
+import { HttpError } from "../../utils/http-error.util";
 import {
   findChatsByUserId,
   findChatById,
   saveChat,
   removeChatById,
   updateChatTitleById,
-} from "./chat.service.js";
-import { createChatSchema, updateChatSchema } from "./chat.dto.js";
+} from "./chat.service";
+import { createChatSchema, updateChatSchema } from "./chat.dto";
 
 // Get all chats for the authenticated user
 export const getChats = asyncHandler(async (req: Request, res: Response) => {
