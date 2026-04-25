@@ -1,5 +1,5 @@
 {
-	"name": "plumo",
+	"name": "plumera",
 	"private": true,
 	"version": "0.0.0",
 	"description": "",
@@ -14,10 +14,9 @@
 	"author": "Damdy Junaedi",
 	"license": "ISC",
 	"devDependencies": {
-		"concurrently": "^9.2.1",
-		"shadcn": "^3.5.1"
+		"concurrently": "^9.2.1"
 	},
 	"dependencies": {
-		"svix": "^1.81.0"
+		"svix": "^1.92.2"
 	}
 }
