@@ -8,8 +8,8 @@
 
 ## Current Status
 **Date:** 2026-04-25
-**Active Phase:** Phase 0 Complete → Starting Phase 1
-**Overall Progress:** Architecture and documentation finalized. No V2 code written yet.
+**Active Phase:** Phase 0 Complete → Phase 1 Ready to Start
+**Overall Progress:** Architecture corrected for multi-job support. Design spec written. No V2 code written yet.
 
 ---
 
@@ -20,17 +20,39 @@
 - Created `docs/TESTING.md` with TDD workflow, `bun test` as test runner, coverage targets
 - Updated `docs/ROADMAP.md` with Phase 0 marked as complete and all future phases defined
 - Decided on Supabase CLI (`supabase start`) for local PostgreSQL — identical to production
+- **Business analysis & gap audit** — identified 7 critical gaps between docs and product requirements
+- **Corrected ARCHITECTURE.md** — added multi-job targeting, contextual chatbot, re-analysis flow, 8-table schema
+- **Corrected ROADMAP.md** — restructured phases with sub-phases, added chatbot and multi-job tasks
+- **Design spec written** — `docs/superpowers/specs/2026-04-25-backend-foundation-design.md`
 
 ---
 
 ## What Is Next (Phase 1)
 The immediate next tasks for the next agent session:
-1. Remove Pinecone from `server/package.json` and delete `pinecone.client.ts`
-2. Set up OpenRouter client for MiniMax M2.5
-3. Set up Gemini File API client (for PDF parsing)
-4. Install BullMQ (confirmed compatible with Bun runtime)
-5. Set up Supabase CLI locally: `bunx supabase start`
-6. Write Drizzle schema for `resumes`, `analysis_jobs`, `suggestions` tables and run migration
+
+### 1A — V1 Cleanup
+1. Remove V1 packages from `server/package.json` (Pinecone, LangChain embeddings, pdf-parse, langchain)
+2. Delete V1 files: `pinecone.client.ts`, `gemini.client.ts` (V1 version), empty dirs
+3. Delete V1 modules: `chat/`, `message/`, `document/` — after migrating salvageable logic
+4. Delete V1 schema files: `chat.ts`, `message.ts`, `score.d.ts`
+5. Migrate valuable business logic from `document.service.ts` to V2 locations
+
+### 1B — New Dependencies
+6. Install: `@google/genai`, `@langchain/langgraph`, `bullmq`, `ioredis`, `openai`
+
+### 1C — LLM Provider Setup
+7. Create Gemini File API provider (`ai/providers/gemini.provider.ts`)
+8. Create OpenRouter/MiniMax provider (`ai/providers/minimax.provider.ts`)
+9. Create Redis client (`lib/redis.client.ts`)
+
+### 1D — Database Schema
+10. Write Drizzle schemas for 7 new tables (resume, target-job, analysis-run, suggestion, suggestion-job-relevance, chat-session, chat-message)
+11. Run `bun run db:generate && bun run db:migrate`
+
+### 1E — API Module Stubs
+12. Create Resume module with full CRUD
+13. Create Analysis, Suggestion, Chat module stubs
+14. Update `app.ts` with new route registrations
 
 ---
 
@@ -47,13 +69,26 @@ The immediate next tasks for the next agent session:
 | Auth | Clerk (already installed) | Already in codebase |
 | Test Runner | `bun test` | Built-in, Jest-compatible API |
 | Vector DB | ❌ Removed (was Pinecone) | Not needed with large context LLMs |
+| Schema Approach | **Normalized (8 tables)** | Multi-job targeting is core feature, needs clean relational model |
+| Multi-Job | 1 resume → N target_jobs | User can apply to multiple positions from one resume |
+| Suggestions | Task-based (pending/accepted/dismissed) | Not live score counter — re-analysis for final score |
+| Chatbot | Contextual, in-editor | Knows resume + all target jobs + analysis results |
+| Re-analysis | New `analysis_run` with incremented `run_number` | Preserves history, allows score comparison |
 
 ---
 
-## Current Codebase State (V1 artifacts still present)
-- `server/src/lib/pinecone.client.ts` — **MUST BE DELETED in Phase 1**
-- `server/src/lib/gemini.client.ts` — **KEEP, will be updated for File API**
-- `server/src/modules/` — contains V1 chat/analyze logic, will be refactored in Phase 2
+## Current Codebase State (V1 artifacts still present — to be cleaned in Phase 1)
+- `server/src/lib/pinecone.client.ts` — **DELETE in Phase 1**
+- `server/src/lib/gemini.client.ts` — **DELETE and REWRITE in Phase 1** (V1 uses LangChain embeddings)
+- `server/src/modules/chat/` — **DELETE in Phase 1** (V1 chat CRUD)
+- `server/src/modules/message/` — **DELETE in Phase 1** (V1 message CRUD with RAG)
+- `server/src/modules/document/` — **MIGRATE then DELETE in Phase 1** (has valuable prompt engineering)
+- `server/src/modules/analyze/` — **DELETE in Phase 1** (empty directory)
+- `server/src/modules/annotation/` — **DELETE in Phase 1** (empty directory)
+- `server/src/modules/job/` — **DELETE in Phase 1** (empty directory)
+- `server/src/db/schema/chat.ts` — **DELETE in Phase 1** (V1 schema)
+- `server/src/db/schema/message.ts` — **DELETE in Phase 1** (V1 schema)
+- `server/src/types/score.d.ts` — **DELETE in Phase 1** (V1 types)
 - `client/src/pages/chat/` — V1 chat UI, will be replaced in Phase 3
 - `client/src/router.tsx` — only has chat routes, needs full redesign in Phase 3
 
@@ -83,6 +118,15 @@ VITE_CLERK_PUBLISHABLE_KEY=
 - MiniMax M2.5 free credits via OpenRouter are **trial-based, not unlimited** — must implement fallback to Gemini Flash-Lite
 - Gemini free tier: **10 RPM for Flash, 15 RPM for Flash-Lite** — must implement exponential backoff on 429 errors
 - Redis is required for BullMQ — use **Upstash Redis** free tier (no self-hosting needed)
+
+---
+
+## Key Reference Documents
+- **Design Spec:** `docs/superpowers/specs/2026-04-25-backend-foundation-design.md`
+- **Architecture:** `docs/ARCHITECTURE.md`
+- **Roadmap:** `docs/ROADMAP.md`
+- **Testing:** `docs/TESTING.md`
+- **Design System:** `DESIGN.md`
 
 ---
 

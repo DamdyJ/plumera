@@ -2,7 +2,7 @@
 
 ## 1. Identity & Core Vision
 You are an AI Agent working on **Plumera V2**, an AI-powered SaaS Resume Advisor.
-**Core Vision:** Plumera is the "Grammarly for Resumes". It is not just a chatbot. It extracts resumes, evaluates them using an agentic AI workflow (LangGraph), and provides a rich-text editing experience where users receive inline suggestions, tone adjustments, and grammar corrections directly on their document.
+**Core Vision:** Plumera is the "Grammarly for Resumes". It extracts resumes, evaluates them against **multiple job targets** using an agentic AI workflow (LangGraph), and provides a rich-text editing experience where users receive inline suggestions, tone adjustments, and grammar corrections directly on their document. Users can also interact with a **contextual chatbot** in the editor that knows their resume and all job targets.
 
 ## 0. Before You Start (Read First)
 - **Check Skills:** Before starting ANY task, look in `.agents/skills/` for a relevant skill file (e.g., `brainstorming`, `systematic-debugging`, `test-driven-development`). Read and follow the skill's `SKILL.md` if it applies to your current task.
@@ -56,12 +56,17 @@ For full technical detail, read `docs/ARCHITECTURE.md`.
 
 **Pipeline Summary:**
 1. User uploads PDF → stored in Supabase Storage
-2. Backend calls Gemini File API to extract document content
-3. Extracted content + Job Description pushed to BullMQ background job
-4. LangGraph state machine runs 3 nodes in sequence (Structure → Impact → Grammar/Tone)
-5. All nodes call MiniMax M2.5 via OpenRouter
-6. Structured JSON output saved to Supabase (`suggestions` table)
-7. Frontend polls for job completion → Tiptap editor renders inline highlights
+2. Backend calls Gemini File API to extract document content → cached in `resumes.extracted_markdown`
+3. User adds 1+ job targets via wizard → stored in `target_jobs` table
+4. User triggers analysis → `analysis_runs` record created → BullMQ job enqueued
+5. LangGraph state machine runs 4 nodes (Structure → Impact → Tone → Scoring) — all multi-job aware
+6. All analysis nodes call MiniMax M2.5 via OpenRouter (fallback: Gemini Flash-Lite)
+7. Structured JSON output saved to Supabase (`suggestions` + `suggestion_job_relevance` tables)
+8. Frontend polls for completion → Tiptap editor renders per-job inline highlights
+9. User addresses suggestions (accept/dismiss as tasks) → triggers re-analysis for final score
+10. Contextual chatbot available in editor — knows resume, all job targets, and analysis results
+
+**Database:** 8 tables — `resumes`, `target_jobs`, `analysis_runs`, `suggestions`, `suggestion_job_relevance`, `chat_sessions`, `chat_messages` (V1 `chat` + `message` tables are deprecated and will be removed)
 
 ## 5. Authentication
 - Auth provider: **Clerk** (already installed in both `client/` and `server/`)
@@ -81,3 +86,4 @@ Read these files for deeper context before working on specific areas:
 - Sprint tasks and overall progress → `docs/ROADMAP.md`
 - UI/UX principles, colors, typography → `DESIGN.md`
 - Testing strategy, TDD workflow, coverage requirements → `docs/TESTING.md`
+- Backend foundation design spec → `docs/superpowers/specs/2026-04-25-backend-foundation-design.md`
