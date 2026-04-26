@@ -21,56 +21,59 @@ Update checkboxes `[x]` as tasks are completed. Ask for user approval before add
 
 ---
 
-## Phase 1: Backend Foundation (Current)
+## Phase 1: Backend Foundation ✅
 
 ### 1A — V1 Cleanup
-- [ ] Remove Pinecone dependencies (`@pinecone-database/pinecone`, `@langchain/pinecone`) from `server/package.json`
-- [ ] Remove V1 LangChain packages (`langchain`, `@langchain/community`, `@langchain/google-genai`, `@langchain/textsplitters`)
-- [ ] Remove `pdf-parse` from `server/package.json`
-- [ ] Delete `server/src/lib/pinecone.client.ts`
-- [ ] Delete `server/src/lib/gemini.client.ts` (V1 embedding client — will be rewritten)
-- [ ] Delete V1 modules: `server/src/modules/chat/`, `server/src/modules/message/`, `server/src/modules/document/`
-- [ ] Delete V1 schema: `server/src/db/schema/chat.ts`, `server/src/db/schema/message.ts`
-- [ ] Delete empty directories: `server/src/modules/analyze/`, `server/src/modules/annotation/`, `server/src/modules/job/`
-- [ ] Delete V1 types: `server/src/types/score.d.ts`
-- [ ] Migrate salvageable business logic from `document.service.ts`:
-  - `savePdf()` → `modules/resume/resume.service.ts`
-  - `detectTask()` + `shouldUseContext()` → `ai/intent/task-detector.ts`
-  - `validateResumeContent()` → `modules/resume/resume.service.ts`
-  - `buildSeparatedContextPrompt()` + `buildSeparatedUserMessage()` → `ai/prompts/chat.prompt.ts`
-  - `formatResponseAsMarkdown()` → `utils/format-markdown.util.ts`
+- [x] Remove Pinecone dependencies (`@pinecone-database/pinecone`, `@langchain/pinecone`) from `server/package.json`
+- [x] Remove V1 LangChain packages (`langchain`, `@langchain/community`, `@langchain/google-genai`, `@langchain/textsplitters`)
+- [x] Remove `pdf-parse` from `server/package.json`
+- [x] Delete `server/src/lib/pinecone.client.ts`
+- [x] Delete `server/src/lib/gemini.client.ts` (V1 embedding client)
+- [x] Delete V1 module implementations under `server/src/modules/chat/`, `server/src/modules/message/`, `server/src/modules/document/`
+- [x] Delete V1 schema: `server/src/db/schema/chat.ts`, `server/src/db/schema/message.ts`
+- [x] Confirm empty V1 directories (`server/src/modules/analyze/`, `server/src/modules/annotation/`, `server/src/modules/job/`) are absent
+- [x] Delete V1 types: `server/src/types/score.d.ts`
+- [x] Migrate salvageable business logic from `document.service.ts`:
+  - `savePdf()` → `modules/resume/resume.storage.ts`
+  - `detectTask()` + `shouldUseContext()` → `modules/chat/chat.prompt.ts`
+  - `validateResumeContent()` → `modules/chat/chat.prompt.ts`
+  - `buildSeparatedContextPrompt()` + `buildSeparatedUserMessage()` → `modules/chat/chat.prompt.ts`
+  - `formatResponseAsMarkdown()` → `modules/chat/chat.prompt.ts`
 
 ### 1B — New Dependencies
-- [ ] Add `@google/genai` (Gemini File API — native SDK)
-- [ ] Add `@langchain/langgraph` (LangGraph.js state machine)
-- [ ] Add `bullmq` + `ioredis` (background job queue)
-- [ ] Add `openai` (OpenRouter/MiniMax compatible client)
-- [ ] Add `zod` to server (if not already present)
-- [ ] Keep `@langchain/core` (required by LangGraph)
+- [x] Add `@google/genai` (Gemini File API — native SDK)
+- [x] Add `@langchain/langgraph` (LangGraph.js state machine)
+- [x] Add `bullmq` + `ioredis` (background job queue)
+- [x] Add `openai` (OpenRouter/MiniMax compatible client)
+- [x] Add `zod` to server
+- [x] Keep `@langchain/core` (required by LangGraph)
 
 ### 1C — LLM Provider Setup
-- [ ] Set up Gemini File API provider (`server/src/ai/providers/gemini.provider.ts`)
-- [ ] Set up OpenRouter/MiniMax provider (`server/src/ai/providers/minimax.provider.ts`)
-- [ ] Set up Redis client (`server/src/lib/redis.client.ts`)
+- [x] Set up Gemini File API provider (`server/src/ai/providers/gemini-file.provider.ts`)
+- [x] Set up OpenRouter/MiniMax provider (`server/src/ai/providers/openrouter.provider.ts`)
+- [x] Set up Redis client (`server/src/lib/redis.client.ts`)
+- [x] Set up BullMQ queue and worker factories (`server/src/queues/analysis.queue.ts`, `server/src/workers/analysis.worker.ts`)
 
-### 1D — Database Schema (V2 — 8 Tables)
-- [ ] Write Drizzle schema: `db/schema/resume.ts`
-- [ ] Write Drizzle schema: `db/schema/target-job.ts`
-- [ ] Write Drizzle schema: `db/schema/analysis-run.ts`
-- [ ] Write Drizzle schema: `db/schema/suggestion.ts`
-- [ ] Write Drizzle schema: `db/schema/suggestion-job-relevance.ts`
-- [ ] Write Drizzle schema: `db/schema/chat-session.ts`
-- [ ] Write Drizzle schema: `db/schema/chat-message.ts`
-- [ ] Update `db/schema/index.ts` to export all new schemas
-- [ ] Run `bun run db:generate && bun run db:migrate`
+### 1D — Database Schema (V2 — 7 Tables)
+- [x] Write Drizzle schema: `db/schema/resume.ts`
+- [x] Write Drizzle schema: `db/schema/target-job.ts`
+- [x] Write Drizzle schema: `db/schema/analysis-run.ts`
+- [x] Write Drizzle schema: `db/schema/suggestion.ts`
+- [x] Write Drizzle schema: `db/schema/suggestion-job-relevance.ts`
+- [x] Write Drizzle schema: `db/schema/chat-session.ts`
+- [x] Write Drizzle schema: `db/schema/chat-message.ts`
+- [x] Update `db/schema/index.ts` to export all new schemas
+- [x] Generate clean V2 Drizzle migration (`drizzle/0000_phase_1_v2_schema.sql`)
+- [x] Verify migration SQL in a rollback transaction against local Postgres
+- [x] Attempt `bun run db:migrate`; local database has stale V1 migration history and must be reset before applying the clean V2 baseline migration
 
 ### 1E — API Module Stubs
-- [ ] Create Resume module (route, controller, service, dto) — full CRUD implementation
-- [ ] Create Analysis module stubs (route + controller shells)
-- [ ] Create Suggestion module stubs (route + controller shells)
-- [ ] Create Chat module stubs (route + controller shells)
-- [ ] Update `app.ts` with new route registrations
-- [ ] Write V2 type definitions (`types/analysis.d.ts`)
+- [x] Create Resume module route/controller stubs for CRUD endpoints
+- [x] Create Analysis module stubs (route + controller shells)
+- [x] Create Suggestion module stubs (route + controller shells)
+- [x] Create Chat module stubs (route + controller shells)
+- [x] Update `app.ts` with new route registrations
+- [x] Write V2 type definitions (`types/analysis.d.ts`)
 
 ---
 

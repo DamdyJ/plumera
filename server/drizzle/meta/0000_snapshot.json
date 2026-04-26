@@ -1,11 +1,276 @@
 {
-  "id": "1fe490e3-beda-4f5e-8fee-66434bb05ddc",
+  "id": "44199df9-734c-4ce1-a90b-75ee5645b436",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.chat": {
-      "name": "chat",
+    "public.analysis_runs": {
+      "name": "analysis_runs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "resume_id": {
+          "name": "resume_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "analysis_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "overall_score": {
+          "name": "overall_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "run_number": {
+          "name": "run_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "error_message": {
+          "name": "error_message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_analysis_runs_resume_id": {
+          "name": "idx_analysis_runs_resume_id",
+          "columns": [
+            {
+              "expression": "resume_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "analysis_runs_resume_id_resumes_id_fk": {
+          "name": "analysis_runs_resume_id_resumes_id_fk",
+          "tableFrom": "analysis_runs",
+          "tableTo": "resumes",
+          "columnsFrom": [
+            "resume_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "chk_analysis_runs_overall_score": {
+          "name": "chk_analysis_runs_overall_score",
+          "value": "\"analysis_runs\".\"overall_score\" IS NULL OR (\"analysis_runs\".\"overall_score\" >= 0 AND \"analysis_runs\".\"overall_score\" <= 100)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.chat_messages": {
+      "name": "chat_messages",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "session_id": {
+          "name": "session_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "chat_message_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_chat_messages_session_id": {
+          "name": "idx_chat_messages_session_id",
+          "columns": [
+            {
+              "expression": "session_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "chat_messages_session_id_chat_sessions_id_fk": {
+          "name": "chat_messages_session_id_chat_sessions_id_fk",
+          "tableFrom": "chat_messages",
+          "tableTo": "chat_sessions",
+          "columnsFrom": [
+            "session_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.chat_sessions": {
+      "name": "chat_sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "resume_id": {
+          "name": "resume_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "analysis_run_id": {
+          "name": "analysis_run_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_chat_sessions_resume_id": {
+          "name": "idx_chat_sessions_resume_id",
+          "columns": [
+            {
+              "expression": "resume_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "chat_sessions_resume_id_resumes_id_fk": {
+          "name": "chat_sessions_resume_id_resumes_id_fk",
+          "tableFrom": "chat_sessions",
+          "tableTo": "resumes",
+          "columnsFrom": [
+            "resume_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "chat_sessions_analysis_run_id_analysis_runs_id_fk": {
+          "name": "chat_sessions_analysis_run_id_analysis_runs_id_fk",
+          "tableFrom": "chat_sessions",
+          "tableTo": "analysis_runs",
+          "columnsFrom": [
+            "analysis_run_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.resumes": {
+      "name": "resumes",
       "schema": "",
       "columns": {
         "id": {
@@ -21,26 +286,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "document_id": {
-          "name": "document_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "chat_title": {
-          "name": "chat_title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "job_title": {
-          "name": "job_title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "job_description": {
-          "name": "job_description",
+        "title": {
+          "name": "title",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -51,9 +298,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "scores": {
-          "name": "scores",
-          "type": "jsonb",
+        "extracted_markdown": {
+          "name": "extracted_markdown",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -73,23 +320,8 @@
         }
       },
       "indexes": {
-        "chat_title_idx": {
-          "name": "chat_title_idx",
-          "columns": [
-            {
-              "expression": "chat_title",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "chat_user_id_idx": {
-          "name": "chat_user_id_idx",
+        "idx_resumes_user_id": {
+          "name": "idx_resumes_user_id",
           "columns": [
             {
               "expression": "user_id",
@@ -109,10 +341,10 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
-    "public.message": {
-      "name": "message",
+    "public.suggestions": {
+      "name": "suggestions",
       "schema": "",
       "columns": {
         "id": {
@@ -122,24 +354,51 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "chat_id": {
-          "name": "chat_id",
+        "analysis_run_id": {
+          "name": "analysis_run_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "prompt": {
-          "name": "prompt",
+        "category": {
+          "name": "category",
+          "type": "suggestion_category",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "severity": {
+          "name": "severity",
+          "type": "suggestion_severity",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "original_text": {
+          "name": "original_text",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "response": {
-          "name": "response",
+        "suggested_text": {
+          "name": "suggested_text",
           "type": "text",
           "primaryKey": false,
+          "notNull": true
+        },
+        "explanation": {
+          "name": "explanation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "suggestion_status",
+          "typeSchema": "public",
+          "primaryKey": false,
           "notNull": true,
-          "default": "''"
+          "default": "'pending'"
         },
         "created_at": {
           "name": "created_at",
@@ -147,28 +406,37 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_suggestions_run_id": {
+          "name": "idx_suggestions_run_id",
+          "columns": [
+            {
+              "expression": "analysis_run_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
-        "message_chat_id_chat_id_fk": {
-          "name": "message_chat_id_chat_id_fk",
-          "tableFrom": "message",
-          "tableTo": "chat",
+        "suggestions_analysis_run_id_analysis_runs_id_fk": {
+          "name": "suggestions_analysis_run_id_analysis_runs_id_fk",
+          "tableFrom": "suggestions",
+          "tableTo": "analysis_runs",
           "columnsFrom": [
-            "chat_id"
+            "analysis_run_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -176,10 +444,266 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
+    },
+    "public.suggestion_job_relevance": {
+      "name": "suggestion_job_relevance",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "suggestion_id": {
+          "name": "suggestion_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_job_id": {
+          "name": "target_job_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "relevance_type": {
+          "name": "relevance_type",
+          "type": "relevance_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "unq_sjr_suggestion_target_job": {
+          "name": "unq_sjr_suggestion_target_job",
+          "columns": [
+            {
+              "expression": "suggestion_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "target_job_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_sjr_suggestion_id": {
+          "name": "idx_sjr_suggestion_id",
+          "columns": [
+            {
+              "expression": "suggestion_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_sjr_target_job_id": {
+          "name": "idx_sjr_target_job_id",
+          "columns": [
+            {
+              "expression": "target_job_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "suggestion_job_relevance_suggestion_id_suggestions_id_fk": {
+          "name": "suggestion_job_relevance_suggestion_id_suggestions_id_fk",
+          "tableFrom": "suggestion_job_relevance",
+          "tableTo": "suggestions",
+          "columnsFrom": [
+            "suggestion_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "suggestion_job_relevance_target_job_id_target_jobs_id_fk": {
+          "name": "suggestion_job_relevance_target_job_id_target_jobs_id_fk",
+          "tableFrom": "suggestion_job_relevance",
+          "tableTo": "target_jobs",
+          "columnsFrom": [
+            "target_job_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.target_jobs": {
+      "name": "target_jobs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "resume_id": {
+          "name": "resume_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "job_title": {
+          "name": "job_title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "job_description": {
+          "name": "job_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "idx_target_jobs_resume_id": {
+          "name": "idx_target_jobs_resume_id",
+          "columns": [
+            {
+              "expression": "resume_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "target_jobs_resume_id_resumes_id_fk": {
+          "name": "target_jobs_resume_id_resumes_id_fk",
+          "tableFrom": "target_jobs",
+          "tableTo": "resumes",
+          "columnsFrom": [
+            "resume_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
     }
   },
-  "enums": {},
+  "enums": {
+    "public.analysis_status": {
+      "name": "analysis_status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "processing",
+        "completed",
+        "failed"
+      ]
+    },
+    "public.chat_message_role": {
+      "name": "chat_message_role",
+      "schema": "public",
+      "values": [
+        "user",
+        "assistant"
+      ]
+    },
+    "public.suggestion_category": {
+      "name": "suggestion_category",
+      "schema": "public",
+      "values": [
+        "structure",
+        "impact",
+        "grammar",
+        "tone"
+      ]
+    },
+    "public.suggestion_severity": {
+      "name": "suggestion_severity",
+      "schema": "public",
+      "values": [
+        "critical",
+        "moderate",
+        "minor"
+      ]
+    },
+    "public.suggestion_status": {
+      "name": "suggestion_status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "accepted",
+        "dismissed"
+      ]
+    },
+    "public.relevance_type": {
+      "name": "relevance_type",
+      "schema": "public",
+      "values": [
+        "strength",
+        "improvement",
+        "neutral"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

@@ -4,11 +4,11 @@
 	"version": "0.0.0",
 	"description": "",
 	"scripts": {
-		"dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
-		"server:dev": "npm run dev --prefix server",
-		"client:dev": "npm run dev --prefix client",
-		"server:build": "npm run build --prefix server",
-		"client:build": "npm run build --prefix client"
+		"dev": "concurrently \"bun run server:dev\" \"bun run client:dev\"",
+		"server:dev": "bun run --cwd server dev",
+		"client:dev": "bun run --cwd client dev",
+		"server:build": "bun run --cwd server build",
+		"client:build": "bun run --cwd client build"
 	},
 	"keywords": [],
 	"author": "Damdy Junaedi",

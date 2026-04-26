@@ -8,7 +8,7 @@ export function zodValidation(
   next: NextFunction,
 ) {
   if (error instanceof ZodError) {
-    const errorDetails = error.errors.map((issue) => ({
+    const errorDetails = error.issues.map((issue) => ({
       path: issue.path.join("."),
       message: issue.message,
     }));
